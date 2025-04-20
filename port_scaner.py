@@ -4,19 +4,26 @@ import argparse
 
 def scan_ports(host, ports):
     print(f"Scanning ports on {ports}...")
+    all_ports = []
     try:
         for port in ports:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.settimeout(1)
+                sock.settimeout(0.5)
                 port = int(port)
                 result = sock.connect_ex((host, port))
 
                 if result == 0:
-                    print(f"Port {port} is open")
+                    all_ports.append(f"Port {port} is open")
                 else:
-                    print(f"Port {port} is closed")
+                    all_ports.append(f"Port {port} is closed")
     except Exception as e:
         print(f"Error scanning port {port}: {e}")
+    for port in all_ports:
+        if "closed" in port:
+            continue
+        else:
+            print(port)
+    print("Port scan completed.")
 
 def clean_ports(string_ports):
     cleaned_ports = []
